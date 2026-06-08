@@ -1,0 +1,116 @@
+---
+description: 토스 TDS Typography 시스템 — 텍스트 스타일은 typography 토큰 사용
+alwaysApply: true
+---
+
+# TDS Typography (파운데이션)
+
+텍스트 스타일은 `fontSize`, `lineHeight` 등을 직접 하드코딩하지 않고 `@toss/tds-mobile`의 `typography` 토큰을 사용한다.
+
+```tsx
+import { Text } from '@toss/tds-mobile';
+
+<Text typography="t1" fontWeight="bold">매우 큰 제목</Text>
+<Text typography="t5">일반 본문</Text>
+<Text typography="st10" fontWeight="medium">보조 본문</Text>
+```
+
+`Paragraph`, `ListHeader.TitleParagraph` 등 TDS 컴포넌트도 동일하게 `typography` + `fontWeight` props를 사용한다.
+
+## 토큰 (100% 기준)
+
+표의 값은 더 큰 텍스트가 적용되지 않은 기본 상황 기준이며, **참고용**이다. 코드에 고정값으로 넣지 않는다.
+
+| 토큰 | fontSize | lineHeight | 용도 |
+|------|----------|------------|------|
+| `t1` | 30 | 40 | 매우 큰 제목 |
+| `st1` | 29 | 38 | |
+| `st2` | 28 | 37 | |
+| `st3` | 27 | 36 | |
+| `t2` | 26 | 35 | 큰 제목 |
+| `st4` | 25 | 34 | |
+| `st5` | 24 | 33 | 조금 큰 제목 |
+| `st6` | 23 | 32 | |
+| `t3` | 22 | 31 | 일반 제목 |
+| `st7` | 21 | 30 | |
+| `t4` | 20 | 29 | 작은 제목 |
+| `st8` | 19 | 28 | 조금 큰 본문 |
+| `st9` | 18 | 27 | |
+| `t5` | 17 | 25.5 | 일반 본문 |
+| `st10` | 16 | 24 | |
+| `t6` | 15 | 22.5 | 작은 본문 |
+| `st11` | 14 | 21 | |
+| `t7` | 13 | 19.5 | 안 읽어도 됨 |
+| `st12` | 12 | 18 | |
+| `st13` | 11 | 16.5 | 아예 안 읽어도 됨 |
+
+## fontWeight
+
+| 값 | 용도 |
+|----|------|
+| `regular` | 기본 본문 |
+| `medium` | 강조 본문, 소제목 |
+| `semibold` | 중간 강조 |
+| `bold` | 제목, 핵심 강조 |
+
+## 적용 원칙
+
+- 페이지/섹션 제목: `t1`~`t3` + `bold`/`semibold`
+- 일반 본문: `t5` + `regular`
+- 보조·캡션·메타 정보: `t6`~`t7`, `st11`~`st13`
+- 계층이 한 단계 차이나는 경우 `t`와 `st` 토큰을 번갈아 사용 (예: `t3` 제목 아래 `st7` 부제목)
+- 인라인 `style={{ fontSize: 17 }}` 또는 CSS `font-size`/`line-height` 직접 지정 금지
+- TDS 컴포넌트가 제공하는 `typography` prop이 있으면 반드시 우선 사용
+
+## 더 큰 텍스트 (접근성)
+
+iOS·Android의 더 큰 텍스트 설정은 앱 내 웹뷰에도 동일하게 반영되어야 한다. 토큰을 쓰면 시스템 글자 크기에 맞춰 자동 조정된다.
+
+### iOS 비율 단계
+
+| 비율 | 단계 |
+|------|------|
+| 100% | 기본 |
+| 110% | Large |
+| 120% | xLarge |
+| 135% | xxLarge |
+| 160% | xxxLarge |
+| 190% | A11y_Medium |
+| 235% | A11y_Large |
+| 275% | A11y_xLarge |
+| 310% | A11y_xxLarge |
+| 350% | A11y_xxxLarge |
+
+### Android 계산식
+
+`실제 fontSize = 기본 fontSize × NN × 0.01` (NN = 사용자 설정 비율). 토큰별 최대값(Max)이 있다.
+
+| 토큰 | Max |
+|------|-----|
+| `t1`, `st1` | 42 |
+| `st2`, `st3`, `t2`, `st4` | 41 |
+| `st5`, `st6`, `t3`, `st7`, `t4`, `st8` | 40 |
+| `st9`, `t5`, `st10` | 39 |
+| `t6`, `st11` | 37 / 36 |
+| `t7` | 34 |
+| `st12` | 32 |
+| `st13` | 31 |
+
+### FontScaleLimit
+
+특정 영역에서 글자 확대 상한이 필요하면 `FontScaleLimit`으로 감싼다.
+
+```tsx
+import { FontScaleLimit, Text } from '@toss/tds-mobile';
+
+<FontScaleLimit limit={160}>
+  <Text typography="t5">최대 160%까지만 커짐</Text>
+</FontScaleLimit>
+```
+
+- tds-mobile 컴포넌트만 있으면 `FontScaleLimit.TdsMobile` 사용
+- Portal로 렌더되는 컴포넌트는 해당 Portal 상위에 별도로 `FontScaleLimit` 적용
+
+## CSS 변수가 필요한 경우
+
+TDS가 주입하는 CSS 변수(`--tds-paragraph-*`)를 참조하거나, `assignTextVariables(typography)` 등 TDS 유틸을 사용한다. px 고정값 대신 토큰 기반 변수를 쓴다.

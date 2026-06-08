@@ -1,0 +1,143 @@
+---
+description: 토스 TDS Mobile 컴포넌트 목록 — UI 구현 시 @toss/tds-mobile에서 import
+alwaysApply: false
+---
+
+# TDS Mobile 컴포넌트 목록
+
+UI는 `@toss/tds-mobile`에서 제공하는 컴포넌트를 우선 사용한다. HTML/CSS로 직접 구현하기 전에 아래 목록에서 적합한 컴포넌트를 찾는다.
+
+```tsx
+import { Button, Text, ListRow, ... } from '@toss/tds-mobile';
+```
+
+## 기본 컴포넌트
+
+| 컴포넌트 | 용도 |
+|----------|------|
+| `Badge` | 상태·라벨 표시 |
+| `BoardRow` | 접이식 게시판 행 |
+| `Border` | 구분선·간격 |
+| `BottomInfo` | 하단 안내 정보 |
+| `BottomSheet` | 하단 시트 (또는 `useBottomSheet`) |
+| `Bubble` | 말풍선 |
+| `Button` | 일반 버튼 |
+| `Checkbox` | 체크박스 (Circle, Line, LineTransparent) |
+| `GridList` | 그리드 목록 |
+| `Highlight` | 강조 영역 |
+| `IconButton` | 아이콘 버튼 |
+| `ListFooter` | 리스트 푸터 |
+| `ListHeader` | 리스트 헤더 |
+| `Loader` | 로딩 표시 |
+| `Menu` | 메뉴 |
+| `Modal` | 모달 |
+| `NumericSpinner` | 숫자 스피너 |
+| `Paragraph` | 문단·텍스트 블록 |
+| `Post` | 게시글 스타일 텍스트 |
+| `ProgressBar` | 진행 바 |
+| `ProgressStepper` | 단계 진행 표시 |
+| `Rating` | 별점 |
+| `Result` | 결과 화면 |
+| `SearchField` | 검색 입력 |
+| `SegmentedControl` | 세그먼트 탭 |
+| `Skeleton` | 스켈레톤 로딩 |
+| `Slider` | 슬라이더 |
+| `Stepper` | 스테퍼 |
+| `Switch` | 토글 스위치 |
+| `Tab` | 탭 |
+| `TableRow` | 테이블 행 |
+| `Text` | 텍스트 (`typography` 토큰 사용) |
+| `TextButton` | 텍스트 버튼 |
+| `Toast` | 토스트 (또는 `useToast`) |
+| `Tooltip` | 툴팁 |
+| `Top` | 페이지 상단 영역 |
+
+## BottomCTA
+
+| 컴포넌트 | 용도 |
+|----------|------|
+| `BottomCTA` / `BottomCTA.Single` | 하단 CTA (버튼 1개) |
+| `BottomCTA.Double` | 하단 CTA (버튼 2개) |
+| `FixedBottomCTA` | 항상 고정된 하단 CTA |
+| `FixedBottomCTA.Double` | 항상 고정된 하단 CTA (버튼 2개) |
+
+## Dialog
+
+| 컴포넌트 | 용도 |
+|----------|------|
+| `AlertDialog` | 알림 다이얼로그 (또는 `useDialog().openAlert`) |
+| `ConfirmDialog` | 확인 다이얼로그 (또는 `useDialog().openConfirm`) |
+
+## TextField
+
+| 컴포넌트 | 용도 |
+|----------|------|
+| `TextField` | 텍스트 입력 |
+| `SplitTextField` | 분할 입력 (예: 전화번호) |
+| `TextArea` | 여러 줄 입력 |
+
+## ListRow
+
+| 컴포넌트 | 용도 |
+|----------|------|
+| `ListRow` | 목록 행 (아이콘·텍스트·액세서리 조합) |
+
+## Agreement
+
+| 컴포넌트 | 용도 |
+|----------|------|
+| `AgreementV3` | 약관 동의 (v3) |
+| `AgreementV4` | 약관 동의 (v4, 권장) |
+| `BottomSheetAgreementModule` | 바텀시트 약관 모듈 |
+| `FullPageAgreementModule` | 전체 페이지 약관 모듈 |
+| `FloatButtonAgreementModule` | 플로팅 버튼 약관 모듈 |
+
+## Asset
+
+| 컴포넌트 | 용도 |
+|----------|------|
+| `Asset` | 아이콘·이미지·Lottie·비디오 래퍼 |
+| `Asset.Icon` | 아이콘 |
+| `Asset.Image` | 이미지 |
+| `Asset.Lottie` | Lottie 애니메이션 |
+
+## Keypad
+
+| 컴포넌트 | 용도 |
+|----------|------|
+| `AlphabetKeypad` | 알파벳 키패드 |
+| `NumberKeypad` | 숫자 키패드 |
+| `FullSecureKeypad` | 보안 키패드 |
+
+## Chart
+
+| 컴포넌트 | 용도 |
+|----------|------|
+| `BarChart` | 막대 차트 |
+| `DoughnutChart` | 도넛 차트 |
+
+## Overlay 훅 (유틸리티)
+
+| 훅 | 용도 |
+|----|------|
+| `useDialog` | 확인·경고 다이얼로그 |
+| `useToast` | 일시적 알림 |
+| `useBottomSheet` | 하단 시트 |
+
+## 기타 유틸리티
+
+| API | 용도 |
+|-----|------|
+| `FontScaleLimit` | 글자 확대 상한 제한 |
+| `ColorSchemeArea` | 다크/라이트 테마 영역 |
+| `FullScreenLoader` | 전체 화면 로딩 |
+| `Spacing` | 간격 |
+| `useHaptic` | 햅틱 피드백 |
+| `useFixedBottomStyle` | 키보드 대응 하단 고정 스타일 |
+
+## 적용 원칙
+
+- 새 UI를 만들 때 위 목록에서 먼저 검색한다.
+- 오버레이(다이얼로그·토스트·바텀시트)는 컴포넌트 직접 조립보다 `useDialog` / `useToast` / `useBottomSheet` 훅을 우선한다.
+- 하단 주요 액션은 `FixedBottomCTA`를 사용한다.
+- 텍스트·색상은 각각 `tds-typography`, `tds-colors` 규칙을 따른다.

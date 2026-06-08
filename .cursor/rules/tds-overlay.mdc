@@ -1,0 +1,98 @@
+---
+description: 토스 TDS Overlay Extension — useDialog, useToast, useBottomSheet 사용 가이드
+alwaysApply: true
+---
+
+# TDS Overlay Extension
+
+Dialog, Toast, BottomSheet 같은 오버레이 UI는 `@toss/tds-mobile`의 선언적 훅으로 사용한다. 커스텀 모달/토스트를 직접 만들지 않는다.
+
+이 프로젝트는 `TDSMobileAITProvider`가 내부적으로 Overlay·Toast 컨텍스트를 포함하므로, 별도 `OverlayProvider` 래핑 없이 훅을 바로 사용할 수 있다.
+
+```tsx
+import { useDialog, useToast, useBottomSheet } from '@toss/tds-mobile';
+```
+
+## useDialog vs useToast vs useBottomSheet
+
+| 훅 | 설명 | 사용 상황 |
+|----|------|-----------|
+| `useDialog` | 사용자의 주의가 필요한 중요한 정보나 결정을 요구할 때 | 중요한 작업 확인, 경고 메시지, 명시적 결정 필요 |
+| `useToast` | 일시적인 알림이나 피드백을 표시할 때 | 작업 완료 알림, 오류 메시지, 일시적 상태 표시 |
+| `useBottomSheet` | 추가 정보나 작업을 화면 하단에서 표시할 때 | 상세 정보 표시, 추가 옵션 제공, 복잡한 상호작용 |
+
+## useDialog
+
+```tsx
+const { openAlert, openConfirm, openAsyncConfirm, close } = useDialog();
+
+// 알림 (확인 버튼만)
+await openAlert({ title: '저장되었어요' });
+
+// 확인/취소
+const confirmed = await openConfirm({
+  title: '정말 삭제할까요?',
+  description: '삭제하면 복구할 수 없어요.',
+});
+if (confirmed) { /* 삭제 */ }
+
+// 비동기 확인 (버튼에 로딩 표시)
+const ok = await openAsyncConfirm({
+  title: '상담을 끝낼까요?',
+  confirmButton: '끝내기',
+  onConfirmClick: async () => { await api.end(); },
+});
+```
+
+- `openAlert`, `openConfirm`, `openAsyncConfirm`은 Promise를 반환한다.
+- `openConfirm`은 확인 시 `true`, 취소·dimmer 클릭 시 `false`를 resolve한다.
+
+## useToast
+
+```tsx
+const { openToast, closeToast } = useToast();
+
+openToast('저장했어요', { icon: 'icn-success-color' });
+openToast('잠시 후 다시 시도해주세요', { icon: 'icn-attention-color' });
+
+// FixedBottomCTA 위에 토스트를 띄울 때
+openToast('완료', { higherThanCTA: true });
+```
+
+- `duration`으로 노출 시간(ms)을 조절한다. 버튼 있으면 기본 5000ms, 없으면 3000ms.
+- 일시적 피드백에는 Toast, 사용자 결정이 필요하면 Dialog를 사용한다.
+
+## useBottomSheet
+
+```tsx
+const { open, close, openOneButtonSheet, openTwoButtonSheet } = useBottomSheet();
+
+// 자유 구성
+open({
+  onClose: close,
+  header: <BottomSheet.Header>주소 선택</BottomSheet.Header>,
+  children: <BottomSheet.Select options={...} />,
+});
+
+// 버튼 1개 (Promise<boolean>)
+await openOneButtonSheet({
+  header: <BottomSheet.Header>안내</BottomSheet.Header>,
+  button: '확인',
+});
+
+// 버튼 2개 (Promise<'rightButtonClick' | 'leftButtonClick' | 'cancel'>)
+const action = await openTwoButtonSheet({
+  header: <BottomSheet.Header>포인트를 먼저 출금해주세요</BottomSheet.Header>,
+  leftButton: '바로 해지하기',
+  rightButton: '포인트 출금하기',
+});
+```
+
+- `openAsyncOneButtonSheet`, `openAsyncTwoButtonSheet`는 CTA 클릭 후 비동기 작업 완료 시 resolve한다.
+- dimmer 클릭으로 닫히는 것이 권장 동작이다. `UNSAFE_ignoreDimmerClick`은 불가피한 경우에만 사용한다.
+
+## 선택 기준
+
+- 사용자가 반드시 응답해야 함 → `useDialog`
+- 잠깐 보여주고 사라져도 됨 → `useToast`
+- 목록·옵션·폼 등 하단에서 펼쳐 보여줌 → `useBottomSheet`

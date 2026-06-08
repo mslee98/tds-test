@@ -1,0 +1,101 @@
+---
+description: 토스 TDS 색상 시스템 — UI 색상은 반드시 colors 토큰 사용
+alwaysApply: true
+---
+
+# TDS Colors (파운데이션)
+
+UI 색상은 하드코딩(hex 직접 입력) 대신 `@toss/tds-colors`의 `colors` 객체를 사용한다.
+
+```tsx
+import { colors } from '@toss/tds-colors';
+
+<div style={{ backgroundColor: colors.blue500 }} />
+```
+
+## 배경 색상
+
+| 토큰 | 값 |
+|------|-----|
+| `colors.background` | #FFFFFF |
+| `colors.greyBackground` | lightThemeGrey100 |
+| `colors.layeredBackground` | #FFFFFF |
+| `colors.floatedBackground` | #FFFFFF |
+
+## Grey
+
+| 토큰 | Hex |
+|------|-----|
+| grey50 | #f9fafb |
+| grey100 | #f2f4f6 |
+| grey200 | #e5e8eb |
+| grey300 | #d1d6db |
+| grey400 | #b0b8c1 |
+| grey500 | #8b95a1 |
+| grey600 | #6b7684 |
+| grey700 | #4e5968 |
+| grey800 | #333d4b |
+| grey900 | #191f28 |
+
+## Blue
+
+| 토큰 | Hex |
+|------|-----|
+| blue50 | #e8f3ff |
+| blue100 | #c9e2ff |
+| blue200 | #90c2ff |
+| blue300 | #64a8ff |
+| blue400 | #4593fc |
+| blue500 | #3182f6 |
+| blue600 | #2272eb |
+| blue700 | #1b64da |
+| blue800 | #1957c2 |
+| blue900 | #194aa6 |
+
+## Red
+
+| 토큰 | Hex |
+|------|-----|
+| red50 | #ffeeee |
+| red100 | #ffd4d6 |
+| red200 | #feafb4 |
+| red300 | #fb8890 |
+| red400 | #f66570 |
+| red500 | #f04452 |
+| red600 | #e42939 |
+| red700 | #d22030 |
+| red800 | #bc1b2a |
+| red900 | #a51926 |
+
+## Grey Opacity
+
+| 토큰 | 값 |
+|------|-----|
+| greyOpacity50 | #001733, 0.02 |
+| greyOpacity100 | #022047, 0.05 |
+| greyOpacity200 | #001b37, 0.1 |
+| greyOpacity300 | #001d3a, 0.18 |
+| greyOpacity400 | #001936, 0.31 |
+| greyOpacity500 | #031832, 0.46 |
+| greyOpacity600 | #00132b, 0.58 |
+| greyOpacity700 | #031228, 0.7 |
+| greyOpacity800 | #000c1e, 0.8 |
+| greyOpacity900 | #020913, 0.91 |
+
+## Orange / Yellow / Green / Teal / Purple
+
+| 팔레트 | 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 |
+|--------|----|----|-----|-----|-----|-----|-----|-----|-----|-----|
+| orange | #fff3e0 | #ffe0b0 | #ffcd80 | #ffbd51 | #ffa927 | #fe9800 | #fb8800 | #f57800 | #ed6700 | #e45600 |
+| yellow | #fff9e7 | #ffefbf | #ffe69b | #ffdd78 | #ffd158 | #ffc342 | #ffb331 | #faa131 | #ee8f11 | #dd7d02 |
+| green | #f0faf6 | #aeefd5 | #76e4b8 | #3fd599 | #15c47e | #03b26c | #02a262 | #029359 | #028450 | #027648 |
+| teal | #edf8f8 | #bce9e9 | #89d8d8 | #58c7c7 | #30b6b6 | #18a5a5 | #109595 | #0c8585 | #097575 | #076565 |
+| purple | #f9f0fc | #edccf8 | #da9bef | #c770e4 | #b44bd7 | #a234c7 | #9128b4 | #8222a2 | #73228e | #65237b |
+
+## 적용 원칙
+
+- 텍스트: grey700~grey900, 보조 텍스트: grey500~grey600
+- 주요 액션/링크: blue500~blue600
+- 에러/경고: red500, 성공: green500, 주의: yellow500/orange500
+- 배경/구분선: grey50~grey200, greyOpacity 토큰
+- CSS 변수가 필요하면 `colors` 값을 참조해 정의한다

@@ -1,0 +1,61 @@
+---
+description: 토스 TDS BottomCTA — 하단 고정 CTA 버튼 사용 가이드
+alwaysApply: true
+---
+
+# TDS BottomCTA
+
+페이지 하단에 고정되는 Call-to-Action 버튼이다. 긴 스크롤이나 키보드 입력 시에도 주요 액션에 접근할 수 있게 한다.
+
+```tsx
+import { BottomCTA, FixedBottomCTA } from '@toss/tds-mobile';
+```
+
+## FixedBottomCTA vs BottomCTA
+
+| 컴포넌트 | 설명 |
+|----------|------|
+| `BottomCTA` | `fixed` prop으로 고정 여부를 제어한다 |
+| `FixedBottomCTA` | `BottomCTA`에 `fixed={true}`가 기본 적용된 래퍼. 항상 화면 하단에 고정 |
+
+```tsx
+// 아래 두 코드는 동일
+<FixedBottomCTA>다음</FixedBottomCTA>
+<BottomCTA fixed>다음</BottomCTA>
+```
+
+- `FixedBottomCTA`는 기본적으로 `BottomCTA.Single`과 같다.
+- 버튼이 두 개면 `FixedBottomCTA.Double` 또는 `<BottomCTA.Double fixed>`를 사용한다.
+
+## Single vs Double
+
+| 타입 | 설명 | 사용법 |
+|------|------|--------|
+| `BottomCTA.Single` (기본) | 버튼 1개 | `children`으로 버튼 내용 지정 |
+| `BottomCTA.Double` | 버튼 2개 | `leftButton`, `rightButton` prop으로 각 버튼 지정 |
+
+```tsx
+// Single
+<FixedBottomCTA onClick={handleNext}>다음</FixedBottomCTA>
+
+// Double
+<FixedBottomCTA.Double
+  leftButton={<Button variant="weak" onClick={handleCancel}>취소</Button>}
+  rightButton={<Button onClick={handleConfirm}>확인</Button>}
+/>
+```
+
+## 주요 props
+
+- `topAccessory` / `bottomAccessory`: CTA 위·아래 보조 UI
+- `hasSafeAreaPadding`: 하단 safe area 패딩 (기본 `true`)
+- `hideOnScroll`: 스크롤 시 CTA 숨김
+- `fixedAboveKeyboard`: 키보드 위에 CTA 고정 (Single, 기본 `true`)
+- `background`: `'default'` | `'none'` — gradient·배경 제거 시 `'none'`
+
+## 적용 원칙
+
+- 페이지의 주요 완료·다음 단계 액션은 `FixedBottomCTA`로 하단에 고정한다.
+- 취소+확인처럼 선택지가 두 개면 `Double`을 사용한다.
+- 본문 영역 하단에 `paddingBottom`을 두어 CTA에 콘텐츠가 가려지지 않게 한다.
+- `useToast`와 함께 쓸 때 CTA 위에 토스트가 필요하면 `higherThanCTA: true`를 사용한다.
