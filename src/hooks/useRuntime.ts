@@ -14,11 +14,11 @@ function detectInApp(): boolean {
 export function useRuntime() {
   const isStandalone = useStandalone();
   const [isMobileViewport, setIsMobileViewport] = useState(
-    () => window.matchMedia('(max-width: 768px)').matches,
+    () => window.matchMedia('(max-width: 1023px)').matches,
   );
 
   useEffect(() => {
-    const mq = window.matchMedia('(max-width: 768px)');
+    const mq = window.matchMedia('(max-width: 1023px)');
     const handler = (event: MediaQueryListEvent) =>
       setIsMobileViewport(event.matches);
 

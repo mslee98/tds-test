@@ -40,6 +40,7 @@ export function PageLayout({
       />
 
       <main
+        className="scrollbar-hidden"
         style={{
           flex: 1,
           overflowY: 'auto',

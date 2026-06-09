@@ -1,47 +1,47 @@
-import { colors } from '@toss/tds-colors';
-import { ActiveTradeCard } from '../components/home/ActiveTradeCard';
-import { BalanceCard } from '../components/home/BalanceCard';
-import { HomeBottomNav } from '../components/home/HomeBottomNav';
-import { HomeHeader } from '../components/home/HomeHeader';
-import { PartnerCard } from '../components/home/PartnerCard';
-import { RecentHistoryCard } from '../components/home/RecentHistoryCard';
+import { useToast } from '@toss/tds-mobile';
+import { useCallback, useState } from 'react';
+import {
+  ActiveTradeCard,
+  AuthEntrySection,
+  BalanceCard,
+  HomeBottomNav,
+  HomeHeader,
+  PartnerCard,
+  RecentHistoryCard,
+} from '../components/home';
+import { useRuntime } from '../hooks/useRuntime';
+import { FRAME_CONTENT_GUTTER_CLASS } from '../layout/frame';
+import { ScreenLayout } from '../layout/ScreenLayout';
+
+const REFRESH_DELAY_MS = 800;
 
 export function HomePage() {
+  const { useMobileLayout } = useRuntime();
+  const { openToast } = useToast();
+  const [balanceRefreshTrigger, setBalanceRefreshTrigger] = useState(0);
+
+  const handleRefresh = useCallback(async () => {
+    // TODO: API 연동 시 queryClient.invalidateQueries 등으로 교체
+    await new Promise((resolve) => setTimeout(resolve, REFRESH_DELAY_MS));
+    setBalanceRefreshTrigger((prev) => prev + 1);
+    openToast('새로고침했어요', { icon: 'icn-success-color' });
+  }, [openToast]);
+
   return (
-    <div
-      style={{
-        minHeight: '100dvh',
-        backgroundColor: colors.grey100,
-        display: 'flex',
-        flexDirection: 'column',
-        color: colors.grey900,
-      }}
+    <ScreenLayout
+      header={<HomeHeader />}
+      footer={<HomeBottomNav />}
+      lockScroll
+      onRefresh={useMobileLayout ? handleRefresh : undefined}
+      contentClassName={`${FRAME_CONTENT_GUTTER_CLASS} pt-2`}
     >
-      <div
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          padding: '20px 16px 120px',
-        }}
-      >
-        <HomeHeader />
-
-        <div
-          style={{
-            marginTop: 24,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 16,
-          }}
-        >
-          <BalanceCard />
-          <ActiveTradeCard />
-          <PartnerCard />
-          <RecentHistoryCard />
-        </div>
+      <div className="flex flex-col gap-3">
+        <BalanceCard balanceRefreshTrigger={balanceRefreshTrigger} />
+        <ActiveTradeCard />
+        <PartnerCard />
+        <RecentHistoryCard />
+        <AuthEntrySection />
       </div>
-
-      <HomeBottomNav />
-    </div>
+    </ScreenLayout>
   );
 }

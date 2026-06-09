@@ -1,5 +1,4 @@
-import { Text, TextButton } from '@toss/tds-mobile';
-import { colors } from '@toss/tds-colors';
+import { ListHeader } from '@toss/tds-mobile';
 
 type SectionHeaderProps = {
   title: string;
@@ -13,26 +12,19 @@ export function SectionHeader({
   onActionClick,
 }: SectionHeaderProps) {
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}
-    >
-      <Text typography="st7" fontWeight="bold">
-        {title}
-      </Text>
-
-      {actionLabel && (
-        <TextButton
-          size="small"
-          color={colors.grey500}
-          onClick={onActionClick}
-        >
-          {actionLabel}
-        </TextButton>
-      )}
-    </div>
+    <ListHeader
+      title={
+        <ListHeader.TitleParagraph fontWeight="bold" typography="t5">
+          {title}
+        </ListHeader.TitleParagraph>
+      }
+      right={
+        actionLabel ? (
+          <ListHeader.RightArrow typography="t6" onClick={onActionClick}>
+            {actionLabel}
+          </ListHeader.RightArrow>
+        ) : undefined
+      }
+    />
   );
 }

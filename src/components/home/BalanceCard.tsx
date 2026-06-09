@@ -1,51 +1,19 @@
 import { colors } from '@toss/tds-colors';
-import { Asset, Text, TextButton } from '@toss/tds-mobile';
+import {
+  Asset,
+  Border,
+  IconButton,
+  ListHeader,
+  ListRow,
+  Text,
+} from '@toss/tds-mobile';
+import { useCallback, useEffect, useState } from 'react';
 import { balanceData } from '../../mocks/homeMock';
+import { AnimatedCoinAmount } from './AnimatedCoinAmount';
+import { AssetButton } from './homeAssets';
 import { HomeCard } from './HomeCard';
 
-function formatMs(amount: number) {
-  return `${amount.toLocaleString()} MS`;
-}
-
-type BalanceRowProps = {
-  dotColor: string;
-  label: string;
-  value: string;
-  showInfo?: boolean;
-};
-
-function BalanceRow({ dotColor, label, value, showInfo }: BalanceRowProps) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <Asset.Icon
-          name="icon-circle-mono"
-          color={dotColor}
-          frameShape={Asset.frameShape.CircleXSmall}
-        />
-        <Text typography="st10" color={colors.grey600}>
-          {label}
-        </Text>
-        {showInfo && (
-          <Asset.Icon
-            name="icon-info-circle-mono"
-            color={colors.grey400}
-            frameShape={Asset.frameShape.CircleXSmall}
-          />
-        )}
-      </div>
-      <Text typography="st10" fontWeight="semibold">
-        {value}
-      </Text>
-    </div>
-  );
-}
+const COIN_UNIT = 'Coin';
 
 type QuickActionProps = {
   label: string;
@@ -54,116 +22,188 @@ type QuickActionProps = {
 
 function QuickAction({ label, iconName }: QuickActionProps) {
   return (
-    <button
-      type="button"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 12,
-        height: 96,
-        border: 'none',
-        borderRadius: 22,
-        backgroundColor: colors.grey50,
-        cursor: 'pointer',
-        padding: 0,
-      }}
-    >
-      <Asset.Icon
-        name={iconName}
-        frameShape={Asset.frameShape.CircleLarge}
-        backgroundColor={colors.blue500}
-        color={colors.background}
-      />
-      <Text typography="st10" fontWeight="bold">
-        {label}
-      </Text>
-    </button>
+    <AssetButton aria-label={label}>
+      <div className="flex flex-col items-center gap-2">
+        <Asset.Icon
+          name={iconName}
+          frameShape={Asset.frameShape.CircleLarge}
+          backgroundColor={colors.blue500}
+          color={colors.background}
+        />
+        <Text typography="st12" fontWeight="bold" color={colors.grey800}>
+          {label}
+        </Text>
+      </div>
+    </AssetButton>
   );
 }
 
-export function BalanceCard() {
+type BalanceCardProps = {
+  /** 새로고침 시 증가 — 잔액 카운트업 재생 */
+  balanceRefreshTrigger?: number;
+};
+
+export function BalanceCard({ balanceRefreshTrigger = 0 }: BalanceCardProps) {
+  const [balanceVisible, setBalanceVisible] = useState(true);
+  const [animTrigger, setAnimTrigger] = useState(1);
+
+  const playBalanceAnimation = useCallback(() => {
+    setAnimTrigger((prev) => prev + 1);
+  }, []);
+
+  const handleToggleVisibility = () => {
+    setBalanceVisible((prev) => {
+      if (!prev) {
+        playBalanceAnimation();
+      }
+      return !prev;
+    });
+  };
+
+  useEffect(() => {
+    if (balanceRefreshTrigger > 0 && balanceVisible) {
+      playBalanceAnimation();
+    }
+  }, [balanceRefreshTrigger, balanceVisible, playBalanceAnimation]);
+
   return (
-    <HomeCard>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Text typography="t5" fontWeight="semibold" color={colors.grey700}>
-            내 MS 잔액
+    <HomeCard className="px-0 py-0">
+      <div className="px-5 pt-5">
+        <ListHeader
+          title={
+            <ListHeader.TitleParagraph fontWeight="bold" typography="t5">
+              내 {COIN_UNIT}
+            </ListHeader.TitleParagraph>
+          }
+          description={
+            <ListHeader.DescriptionParagraph typography="t7" color={colors.grey500}>
+              Coin 계좌
+            </ListHeader.DescriptionParagraph>
+          }
+          right={
+            <div className="flex items-center gap-1">
+              <IconButton
+                name={balanceVisible ? 'icon-eye-on-mono' : 'icon-eye-off-mono'}
+                variant="clear"
+                color={colors.grey400}
+                iconSize={20}
+                aria-label={balanceVisible ? '잔액 숨기기' : '잔액 보기'}
+                onClick={handleToggleVisibility}
+              />
+              <ListHeader.RightArrow typography="t6" color={colors.grey600}>
+                계좌
+              </ListHeader.RightArrow>
+            </div>
+          }
+        />
+      </div>
+
+      <div className="flex items-end gap-1.5 px-5 pb-1">
+        <AnimatedCoinAmount
+          value={balanceData.total}
+          visible={balanceVisible}
+          trigger={animTrigger}
+          typography="t2"
+          fontWeight="bold"
+          color={colors.grey900}
+        />
+        {balanceVisible ? (
+          <Text
+            typography="st10"
+            fontWeight="semibold"
+            color={colors.grey600}
+            className="mb-1 tabular-nums"
+          >
+            {COIN_UNIT}
           </Text>
+        ) : null}
+      </div>
+
+      <ListRow
+        left={
           <Asset.Icon
-            name="icon-eye-on-mono"
+            name="icon-circle-mono"
+            color={colors.blue500}
+            frameShape={Asset.frameShape.CircleXSmall}
+          />
+        }
+        contents={
+          <ListRow.Texts type="1RowTypeA" top="사용 가능" topProps={{ color: colors.grey600 }} />
+        }
+        right={
+          <ListRow.Texts
+            type="Right1RowTypeE"
+            top={
+              <AnimatedCoinAmount
+                value={balanceData.available}
+                visible={balanceVisible}
+                trigger={animTrigger}
+                delayMs={60}
+                suffix={COIN_UNIT}
+                typography="st10"
+                fontWeight="semibold"
+                color={colors.grey900}
+              />
+            }
+            marginTop={0}
+          />
+        }
+        verticalPadding="small"
+      />
+
+      <ListRow
+        left={
+          <Asset.Icon
+            name="icon-circle-mono"
             color={colors.grey400}
             frameShape={Asset.frameShape.CircleXSmall}
           />
-        </div>
-
-        <TextButton size="small" color={colors.grey600}>
-          내 지갑
-        </TextButton>
-      </div>
-
-      <div
-        style={{
-          marginTop: 24,
-          display: 'flex',
-          alignItems: 'flex-end',
-          gap: 8,
-        }}
-      >
-        <Text typography="t1" fontWeight="bold">
-          {balanceData.total.toLocaleString()}
-        </Text>
-        <Text typography="st9" fontWeight="semibold" style={{ marginBottom: 4 }}>
-          MS
-        </Text>
-      </div>
-
-      <div
-        style={{
-          marginTop: 28,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 12,
-        }}
-      >
-        <BalanceRow
-          dotColor={colors.blue500}
-          label="사용 가능"
-          value={formatMs(balanceData.available)}
-        />
-        <BalanceRow
-          dotColor={colors.grey400}
-          label="거래 중"
-          value={formatMs(balanceData.inTrade)}
-          showInfo
-        />
-      </div>
-
-      <div
-        style={{
-          margin: '24px 0',
-          height: 1,
-          backgroundColor: colors.grey100,
-        }}
+        }
+        contents={
+          <ListRow.Texts
+            type="1RowTypeA"
+            top={
+              <span className="inline-flex items-center gap-1">
+                거래 중
+                <Asset.Icon
+                  name="icon-info-circle-mono"
+                  color={colors.grey400}
+                  frameShape={Asset.frameShape.CircleXSmall}
+                />
+              </span>
+            }
+            topProps={{ color: colors.grey600 }}
+          />
+        }
+        right={
+          <ListRow.Texts
+            type="Right1RowTypeE"
+            top={
+              <AnimatedCoinAmount
+                value={balanceData.inTrade}
+                visible={balanceVisible}
+                trigger={animTrigger}
+                delayMs={120}
+                suffix={COIN_UNIT}
+                typography="st10"
+                fontWeight="semibold"
+                color={colors.grey900}
+              />
+            }
+            marginTop={0}
+          />
+        }
+        verticalPadding="small"
       />
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 12,
-        }}
-      >
-        <QuickAction label="충전하기" iconName="icon-plus-mono" />
-        <QuickAction label="보내기" iconName="icon-arrow-right-up-mono" />
-        <QuickAction label="사용하기" iconName="icon-shopping-bag-mono" />
+      <div className="px-5 pb-5">
+        <Border variant="padding24" />
+
+        <div className="grid grid-cols-3 gap-2 pt-4">
+          <QuickAction label="충전하기" iconName="icon-plus-mono" />
+          <QuickAction label="보내기" iconName="icon-arrow-right-up-mono" />
+          <QuickAction label="사용하기" iconName="icon-shopping-bag-mono" />
+        </div>
       </div>
     </HomeCard>
   );

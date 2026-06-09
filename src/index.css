@@ -1,3 +1,22 @@
+@import 'tailwindcss';
+
+@custom-variant desktop (@media (width >= 64rem));
+
+@theme {
+  --breakpoint-desktop: 64rem;
+  --color-background: #ffffff;
+  --color-grey-50: #f9fafb;
+  --color-grey-100: #f2f4f6;
+  --color-grey-400: #b0b8c1;
+  --color-grey-500: #8b95a1;
+  --color-grey-600: #6b7684;
+  --color-grey-700: #4e5968;
+  --color-grey-900: #191f28;
+  --color-blue-50: #e8f3ff;
+  --color-blue-400: #4593fc;
+  --color-blue-500: #3182f6;
+}
+
 *,
 *::before,
 *::after {
@@ -12,6 +31,18 @@ body,
   min-height: 100dvh;
 }
 
+/* 스크롤 컨테이너는 html 하나만 — 휠·스크롤바 동작 통일 */
+html {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: none;
+}
+
+body,
+#root {
+  overscroll-behavior-y: contain;
+}
+
 body {
   font-family:
     -apple-system,
@@ -21,8 +52,73 @@ body {
     'Helvetica Neue',
     Arial,
     sans-serif;
-  background: #ffffff;
+  background: #f2f4f6;
   color: #111111;
   -webkit-tap-highlight-color: transparent;
-  overscroll-behavior: none;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+/* 프레임 내부 스크롤 — html·body 잠금, #frameMain 안에서 스크롤 */
+html.home-mobile-no-scroll,
+body.home-mobile-no-scroll {
+  overflow: hidden;
+  height: 100dvh;
+}
+
+body.home-mobile-no-scroll #root {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+}
+
+body.home-mobile-no-scroll #root > * {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 0%;
+  flex-direction: column;
+  width: 100%;
+}
+
+#frameMain.frame-lock-scroll {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 0%;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Pull-to-refresh — 프레임 내부 스크롤 영역 */
+.ptr.pull-to-refresh-root {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 0%;
+  flex-direction: column;
+}
+
+.ptr.pull-to-refresh-root .ptr__children {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 0%;
+  flex-direction: column;
+}
+
+/* 프레임 내부 스크롤 — 스크롤바 숨김 (휠·터치 스크롤은 유지) */
+.scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.ptr.scrollbar-hidden .ptr__children {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.ptr.scrollbar-hidden .ptr__children::-webkit-scrollbar {
+  display: none;
 }
