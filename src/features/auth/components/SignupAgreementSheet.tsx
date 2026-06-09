@@ -150,10 +150,6 @@ function SignupAgreementFields({
               <AgreementV4.Necessity variant="optional">선택</AgreementV4.Necessity>
             }
           >
-            <AgreementV4.Description variant="box" indent={2}>
-              수집된 개인정보는 회원 식별, Coin 계좌 운영, 거래 안내 목적으로만
-              사용돼요.
-            </AgreementV4.Description>
             혜택·이벤트 알림
           </AgreementV4.Text>
         }
@@ -177,7 +173,7 @@ function SignupAgreementFields({
             middle={<AgreementV4.Text>혜택·이벤트 알림 수신</AgreementV4.Text>}
           />
         </AgreementV4.IndentPushableTrigger>
-        <AgreementV4.IndentPushableContent>
+        <AgreementV4.IndentPushableContent indent={1}>
           <AgreementV4
             variant="small"
             left={
